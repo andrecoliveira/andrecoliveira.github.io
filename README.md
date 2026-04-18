@@ -4,10 +4,11 @@ Personal site / résumé of André Oliveira.
 
 ## Structure
 
-- `index.html` — main entry (two editorial résumé variations side-by-side, bilingual PT/EN)
-- `resume-a.jsx` — Variation A (Editorial Serif)
-- `resume-b.jsx` — Variation B (Editorial Mono)
+- `index.html` — entry point (editorial résumé, bilingual PT/EN toggle)
+- `resume-a.jsx` — main component (Editorial Serif)
 - `resume-data.jsx` — shared content (experience, skills, education, languages, i18n labels)
+- `resume_pt.pdf` — PDF résumé (Portuguese) — add to repo root
+- `resume_en.pdf` — PDF résumé (English) — add to repo root
 
 ## Running
 

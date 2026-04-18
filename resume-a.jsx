@@ -22,6 +22,8 @@ function ResumeEditorialSerif({
   const panel = isDark ? 'oklch(0.22 0.008 150)' : 'oklch(0.96 0.005 95)';
 
   const pagePad = compact ? '40px 48px' : '64px 80px';
+  const pagePadX = compact ? 48 : 80;
+  const pagePadY = compact ? 40 : 64;
   const sectionGap = compact ? 96 : 160;
 
   const styles = {
@@ -31,20 +33,31 @@ function ResumeEditorialSerif({
       fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
       fontSize: 16,
       lineHeight: 1.55,
-      padding: pagePad,
+      padding: 0,
       minHeight: '100%',
       transition: 'background 0.4s ease, color 0.4s ease',
+    },
+    pageInner: {
+      padding: `0 ${pagePadX}px ${pagePadY}px`,
     },
     navbar: {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingBottom: 28,
+      padding: `16px ${pagePadX}px`,
       borderBottom: `1px solid ${rule}`,
-      marginBottom: compact ? 64 : 96,
+      marginBottom: compact ? 44 : 76,
       fontFamily: "'Inter', sans-serif",
       fontSize: 13,
       letterSpacing: 0.2,
+      position: 'sticky',
+      top: 0,
+      zIndex: 50,
+      background: isDark
+        ? 'color-mix(in oklch, ' + bg + ' 88%, transparent)'
+        : 'color-mix(in oklch, ' + bg + ' 88%, transparent)',
+      backdropFilter: 'blur(12px)',
+      WebkitBackdropFilter: 'blur(12px)',
     },
     brand: {
       fontFamily: "'Instrument Serif', 'Times New Roman', serif",
@@ -56,6 +69,7 @@ function ResumeEditorialSerif({
     navLinks: {
       display: 'flex',
       gap: 28,
+      alignItems: 'center',
     },
     navLink: {
       color: dim,
@@ -650,21 +664,20 @@ function ResumeEditorialSerif({
         </div>
       </nav>
 
+      <div style={styles.pageInner}>
+
       {/* Hero */}
       <section id="home">
         {renderHero()}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: compact ? 40 : 56, alignItems: 'center' }}>
-          <a href="#" onClick={(e) => { e.preventDefault(); window.print(); }} style={styles.downloadBtn} className="rs-download">
-            ↓ {L.downloadPDF}
-          </a>
-          <a href={`mailto:${RESUME.email}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 22px', borderRadius: 999, border: `1px solid ${rule}`, color: fg, textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 0.3, transition: 'all 0.2s' }} className="rs-hero-link">
-            ✉ Email
+          <a href={lang === 'pt' ? 'resume_pt.pdf' : 'resume_en.pdf'} target="_blank" rel="noopener" download style={styles.downloadBtn} className="rs-download">
+            {L.downloadPDF}
           </a>
           <a href={`https://${RESUME.github}`} target="_blank" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 22px', borderRadius: 999, border: `1px solid ${rule}`, color: fg, textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 0.3, transition: 'all 0.2s' }} className="rs-hero-link">
-            ↗ GitHub
+            GitHub
           </a>
           <a href={`https://${RESUME.linkedin}`} target="_blank" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 22px', borderRadius: 999, border: `1px solid ${rule}`, color: fg, textDecoration: 'none', fontSize: 13, fontWeight: 500, letterSpacing: 0.3, transition: 'all 0.2s' }} className="rs-hero-link">
-            ↗ LinkedIn
+            LinkedIn
           </a>
         </div>
       </section>
@@ -778,7 +791,8 @@ function ResumeEditorialSerif({
         </div>
       </section>
 
-      {/* Footer removed — content ends at Education */}
+      {/* Footer removed — content ends at Languages */}
+      </div>
     </div>
   );
 }

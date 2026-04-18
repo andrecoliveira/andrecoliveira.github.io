@@ -1,340 +1,26 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>André Oliveira — Resume redesign</title>
+<title>André Oliveira — Resume</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@300;400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 
 <style>
   html, body { margin: 0; padding: 0; }
   body {
-    background: #111;
+    background: #0d1a0f;
     color: #eee;
     font-family: 'Inter', -apple-system, sans-serif;
-    overflow-x: hidden;
   }
-
-  /* Preview scaler — wraps a 1440px "page" and scales to fit its column */
-  .preview-wrap {
-    width: 720px;
-    height: 900px;
-    overflow: hidden;
-    background: white;
-    position: relative;
-    border-radius: 4px;
-  }
-  .preview-scaler {
-    width: 1440px;
-    height: 1800px;
-    transform: scale(0.5);
-    transform-origin: top left;
-    overflow-y: auto;
-    overflow-x: hidden;
-    background: white;
-  }
-  .preview-scaler::-webkit-scrollbar { width: 8px; }
-  .preview-scaler::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
-
-  /* Canvas header */
-  .header-bar {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(17,17,17,0.9);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid #2a2a2a;
-    padding: 14px 32px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #eee;
-  }
-  .header-bar h1 {
-    margin: 0; font-size: 14px; font-weight: 600; letter-spacing: -0.2px;
-  }
-  .header-bar .sub { color: #888; font-size: 12px; margin-left: 8px; font-weight: 400; }
-  .header-bar .right { display: flex; gap: 16px; align-items: center; font-size: 12px; color: #888; }
-
-  /* Variation cards wrapper */
-  .canvas {
-    padding: 40px 32px 80px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-    max-width: 1600px;
-    margin: 0 auto;
-  }
-  @media (max-width: 1400px) {
-    .canvas { grid-template-columns: 1fr; }
-  }
-  .variation {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .variation-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 0 4px;
-  }
-  .variation-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    color: #666;
-    text-transform: uppercase;
-  }
-  .variation-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 22px;
-    color: #eee;
-    font-style: italic;
-    letter-spacing: -0.3px;
-  }
-  .preview-wrap {
-    width: 100%;
-    aspect-ratio: 1440 / 1800;
-    height: auto;
-  }
-  .preview-scaler {
-    width: 1440px;
-    height: 1800px;
-  }
-
-  /* Tweaks panel */
-  #tweaks-panel {
-    position: fixed;
-    right: 24px;
-    bottom: 24px;
-    width: 320px;
-    max-height: calc(100vh - 48px);
-    overflow-y: auto;
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a;
-    border-radius: 10px;
-    padding: 20px;
-    color: #eee;
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    z-index: 200;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-    display: none;
-  }
-  #tweaks-panel.open { display: block; }
-  #tweaks-panel h2 {
-    margin: 0 0 16px; font-size: 13px; font-weight: 600;
-    letter-spacing: 1px; text-transform: uppercase; color: #aaa;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  #tweaks-panel h2 .close {
-    cursor: pointer; color: #666; font-size: 18px; line-height: 1;
-  }
-  #tweaks-panel .tweak { margin-bottom: 16px; }
-  #tweaks-panel label {
-    display: block;
-    font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px;
-    color: #888; margin-bottom: 8px; font-weight: 500;
-  }
-  #tweaks-panel .seg {
-    display: flex; background: #0f0f0f; border: 1px solid #2a2a2a;
-    border-radius: 6px; padding: 2px; overflow: hidden;
-  }
-  #tweaks-panel .seg button {
-    flex: 1; background: transparent; border: none; color: #888;
-    padding: 7px 8px; font-size: 12px; cursor: pointer; font-family: inherit;
-    border-radius: 4px; transition: all 0.15s;
-  }
-  #tweaks-panel .seg button.active { background: #7dce94; color: #0d1a0f; font-weight: 600; }
-  #tweaks-panel .seg button:hover:not(.active) { color: #ddd; }
-  #tweaks-panel .swatches {
-    display: flex; gap: 8px; flex-wrap: wrap;
-  }
-  #tweaks-panel .swatch {
-    width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
-    border: 2px solid transparent; transition: all 0.15s;
-  }
-  #tweaks-panel .swatch.active { border-color: #eee; transform: scale(1.1); }
-  #tweaks-panel .hint {
-    font-size: 11px; color: #666; margin-top: 8px; line-height: 1.5;
-  }
-  #tweaks-panel .tag {
-    font-family: 'JetBrains Mono', monospace; font-size: 10px;
-    padding: 2px 6px; background: #2a2a2a; border-radius: 3px; color: #aaa;
-  }
-
-  /* Floating toggle button when panel closed */
-  #tweaks-toggle {
-    position: fixed; right: 24px; bottom: 24px;
-    width: 44px; height: 44px; border-radius: 50%;
-    background: #7dce94; color: #0d1a0f;
-    border: none; cursor: pointer; font-size: 18px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    z-index: 199;
-    display: flex; align-items: center; justify-content: center;
-  }
-  #tweaks-toggle.hidden { display: none; }
-
-  /* Section intro */
-  .intro {
-    padding: 60px 32px 20px;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-  .intro .eyebrow {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; letter-spacing: 2px; color: #7dce94;
-    text-transform: uppercase; margin-bottom: 16px;
-  }
-  .intro h2 {
-    font-family: 'Instrument Serif', serif;
-    font-size: 52px; font-weight: 400; letter-spacing: -1px;
-    line-height: 1.1; margin: 0 0 20px;
-    color: #eee;
-  }
-  .intro h2 em { color: #7dce94; }
-  .intro p {
-    font-size: 15px; line-height: 1.7; color: #aaa; max-width: 640px;
-  }
+  #mount-a { width: 100%; min-height: 100vh; }
 </style>
 </head>
 <body>
 
-<div class="header-bar">
-  <h1>
-    André Oliveira <span class="sub">— resume redesign, 2 editorial variations</span>
-  </h1>
-  <div class="right">
-    <span>Open a variation in a new tab:</span>
-    <a href="resume-a-standalone.html" target="_blank" style="color:#7dce94;text-decoration:none">A ↗</a>
-    <a href="resume-b-standalone.html" target="_blank" style="color:#7dce94;text-decoration:none">B ↗</a>
-  </div>
-</div>
-
-<div class="intro">
-  <div class="eyebrow">// Redesign · Editorial direction · PT/EN</div>
-  <h2>Two editorial takes on your resume — one <em>serif & soft</em>, one <em>mono & precise</em>.</h2>
-  <p>
-    Both keep your green accent (modernized to oklch), use a classic vertical timeline, skill chips
-    grouped by category, and are fully bilingual. Use the <strong>Tweaks</strong> panel (bottom-right)
-    to switch theme, font, hero, density, timeline and language live.
-  </p>
-</div>
-
-<div class="canvas">
-  <div class="variation">
-    <div class="variation-header">
-      <div>
-        <div class="variation-label">Variation A</div>
-        <div class="variation-title">Editorial Serif</div>
-      </div>
-      <div class="variation-label">Instrument Serif × Inter</div>
-    </div>
-    <div class="preview-wrap" data-screen-label="A — Editorial Serif">
-      <div class="preview-scaler" id="mount-a"></div>
-    </div>
-  </div>
-
-  <div class="variation">
-    <div class="variation-header">
-      <div>
-        <div class="variation-label">Variation B</div>
-        <div class="variation-title">Editorial Mono</div>
-      </div>
-      <div class="variation-label">Space Grotesk × JetBrains Mono</div>
-    </div>
-    <div class="preview-wrap" data-screen-label="B — Editorial Mono">
-      <div class="preview-scaler" id="mount-b"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Tweaks UI -->
-<button id="tweaks-toggle" title="Open Tweaks">⚙</button>
-
-<div id="tweaks-panel">
-  <h2>
-    Tweaks
-    <span class="close" id="tweaks-close">×</span>
-  </h2>
-
-  <div class="tweak">
-    <label>Language <span class="tag" id="lang-tag">EN</span></label>
-    <div class="seg" data-key="lang">
-      <button data-val="en">EN</button>
-      <button data-val="pt">PT</button>
-    </div>
-  </div>
-
-  <div class="tweak">
-    <label>Theme</label>
-    <div class="seg" data-key="theme">
-      <button data-val="light">Light</button>
-      <button data-val="dark">Dark</button>
-    </div>
-  </div>
-
-  <div class="tweak">
-    <label>Accent</label>
-    <div class="swatches" id="accent-swatches">
-      <div class="swatch" style="background:#7dce94" data-val="#7dce94" title="Modernized green"></div>
-      <div class="swatch" style="background:oklch(0.76 0.14 55)" data-val="oklch(0.76 0.14 55)" title="Amber"></div>
-      <div class="swatch" style="background:oklch(0.7 0.18 28)" data-val="oklch(0.7 0.18 28)" title="Terracotta"></div>
-      <div class="swatch" style="background:oklch(0.75 0.13 250)" data-val="oklch(0.75 0.13 250)" title="Blue"></div>
-      <div class="swatch" style="background:oklch(0.7 0.18 320)" data-val="oklch(0.7 0.18 320)" title="Magenta"></div>
-      <div class="swatch" style="background:#eee" data-val="oklch(0.92 0.005 95)" title="Mono"></div>
-    </div>
-  </div>
-
-  <div class="tweak">
-    <label>Hero variant</label>
-    <div class="seg" data-key="heroVariant">
-      <button data-val="classic">Classic</button>
-      <button data-val="compact">Compact</button>
-      <button data-val="story">Story</button>
-    </div>
-  </div>
-
-  <div class="tweak">
-    <label>Timeline</label>
-    <div class="seg" data-key="timelineVariant">
-      <button data-val="classic">Classic</button>
-      <button data-val="dense">Dense</button>
-    </div>
-  </div>
-
-  <div class="tweak">
-    <label>Density</label>
-    <div class="seg" data-key="density">
-      <button data-val="spacious">Spacious</button>
-      <button data-val="compact">Compact</button>
-    </div>
-  </div>
-
-  <div class="tweak">
-    <label>Font pairing (Var. A)</label>
-    <div class="seg" data-key="fontA">
-      <button data-val="instrument">Instrument</button>
-      <button data-val="fraunces">Fraunces</button>
-      <button data-val="garamond">Garamond</button>
-    </div>
-  </div>
-
-  <div class="tweak">
-    <label>Font pairing (Var. B)</label>
-    <div class="seg" data-key="fontB">
-      <button data-val="grotesk">Grotesk</button>
-      <button data-val="inter">Inter</button>
-      <button data-val="plex">IBM Plex</button>
-    </div>
-  </div>
-
-  <div class="hint">
-    Toggle the entire <strong>Tweaks</strong> toolbar from the top of the canvas toolbar to hide these controls.
-  </div>
-</div>
+<div id="mount-a" data-screen-label="Resume"></div>
 
 <!-- React + Babel -->
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
@@ -343,46 +29,24 @@
 
 <script type="text/babel" src="resume-data.jsx"></script>
 <script type="text/babel" src="resume-a.jsx"></script>
-<script type="text/babel" src="resume-b.jsx"></script>
 
 <script type="text/babel">
-  // Tweak state (persisted via EDITMODE-BEGIN/END for live editing)
-  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-    "lang": "pt",
-    "theme": "dark",
-    "accent": "#7dce94",
-    "heroVariant": "story",
-    "timelineVariant": "classic",
-    "density": "compact",
-    "fontA": "fraunces",
-    "fontB": "grotesk"
-  }/*EDITMODE-END*/;
-
-  // Load from localStorage, fallback to defaults
-  const loadState = () => {
-    try {
-      const saved = JSON.parse(localStorage.getItem('ao-resume-tweaks') || '{}');
-      return { ...TWEAK_DEFAULTS, ...saved };
-    } catch { return { ...TWEAK_DEFAULTS }; }
+  const CONFIG = {
+    lang: "pt",
+    theme: "dark",
+    accent: "#7dce94",
+    heroVariant: "story",
+    timelineVariant: "classic",
+    density: "compact",
+    fontA: "fraunces",
   };
 
-  let state = loadState();
-
-  // Font family maps — rendered by CSS vars we could inject, but cleanest:
-  // swap the fonts passed to the components via CSS on the mount roots.
   const FONT_MAP_A = {
     instrument: "'Instrument Serif', 'Times New Roman', serif",
     fraunces:  "'Fraunces', 'Times New Roman', serif",
-    garamond:  "'EB Garamond', 'Georgia', serif",
-  };
-  const FONT_MAP_B_DISPLAY = {
-    grotesk: "'Space Grotesk', 'Inter', sans-serif",
-    inter:   "'Inter', sans-serif",
-    plex:    "'IBM Plex Sans', sans-serif",
   };
 
   function applyFontOverrides() {
-    // Override the display font used in variation A
     const styleEl = document.getElementById('font-overrides') || (() => {
       const s = document.createElement('style');
       s.id = 'font-overrides';
@@ -391,107 +55,43 @@
     })();
     styleEl.textContent = `
       #mount-a .rs-a [style*="Instrument Serif"] {
-        font-family: ${FONT_MAP_A[state.fontA]} !important;
-      }
-      #mount-b .rs-b [style*="Space Grotesk"] {
-        font-family: ${FONT_MAP_B_DISPLAY[state.fontB]} !important;
+        font-family: ${FONT_MAP_A[CONFIG.fontA]} !important;
       }
     `;
   }
 
+  // The built-in PT/EN toggle inside resume-a.jsx calls window.__setLang.
+  // Keep that working by re-rendering on change.
+  let currentLang = CONFIG.lang;
+
   function render() {
-    const propsBase = {
-      lang: state.lang,
-      theme: state.theme,
-      density: state.density,
-      heroVariant: state.heroVariant,
-      timelineVariant: state.timelineVariant,
-      accent: state.accent,
+    const props = {
+      lang: currentLang,
+      theme: CONFIG.theme,
+      density: CONFIG.density,
+      heroVariant: CONFIG.heroVariant,
+      timelineVariant: CONFIG.timelineVariant,
+      accent: CONFIG.accent,
     };
-
     const mountA = document.getElementById('mount-a');
-    const mountB = document.getElementById('mount-b');
     if (!mountA._root) mountA._root = ReactDOM.createRoot(mountA);
-    if (!mountB._root) mountB._root = ReactDOM.createRoot(mountB);
-    mountA._root.render(<ResumeEditorialSerif {...propsBase} />);
-    mountB._root.render(<ResumeEditorialMono {...propsBase} />);
+    mountA._root.render(<ResumeEditorialSerif {...props} />);
     applyFontOverrides();
-    updateTweakUI();
   }
 
-  function updateTweakUI() {
-    document.querySelectorAll('#tweaks-panel .seg').forEach(seg => {
-      const key = seg.dataset.key;
-      seg.querySelectorAll('button').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.val === state[key]);
-      });
-    });
-    document.querySelectorAll('#accent-swatches .swatch').forEach(sw => {
-      sw.classList.toggle('active', sw.dataset.val === state.accent);
-    });
-    document.getElementById('lang-tag').textContent = state.lang.toUpperCase();
-  }
-
-  function setKey(key, val) {
-    state[key] = val;
-    localStorage.setItem('ao-resume-tweaks', JSON.stringify(state));
+  window.__setLang = (val) => {
+    currentLang = val;
+    try { localStorage.setItem('ao-resume-lang', val); } catch {}
     render();
-    // Also post to parent to persist file-side
-    const edits = {};
-    edits[key] = val;
-    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
-  }
+  };
 
-  // Expose setter so the in-page toggle can use it
-  window.__setLang = (val) => setKey('lang', val);
+  // Restore saved language preference (user's last PT/EN choice)
+  try {
+    const saved = localStorage.getItem('ao-resume-lang');
+    if (saved === 'pt' || saved === 'en') currentLang = saved;
+  } catch {}
 
-  // Wire UI
-  document.querySelectorAll('#tweaks-panel .seg').forEach(seg => {
-    seg.addEventListener('click', e => {
-      const btn = e.target.closest('button');
-      if (!btn) return;
-      setKey(seg.dataset.key, btn.dataset.val);
-    });
-  });
-  document.querySelectorAll('#accent-swatches .swatch').forEach(sw => {
-    sw.addEventListener('click', () => setKey('accent', sw.dataset.val));
-  });
-
-  // Tweaks toolbar host messaging
-  let tweaksActive = false;
-  const panel = document.getElementById('tweaks-panel');
-  const toggle = document.getElementById('tweaks-toggle');
-
-  function showPanel() {
-    panel.classList.add('open');
-    toggle.classList.add('hidden');
-    tweaksActive = true;
-  }
-  function hidePanel() {
-    panel.classList.remove('open');
-    toggle.classList.remove('hidden');
-    tweaksActive = false;
-  }
-
-  toggle.addEventListener('click', showPanel);
-  document.getElementById('tweaks-close').addEventListener('click', hidePanel);
-
-  // REGISTER LISTENER FIRST, then announce
-  window.addEventListener('message', (e) => {
-    const d = e.data;
-    if (!d || !d.type) return;
-    if (d.type === '__activate_edit_mode') {
-      showPanel();
-    } else if (d.type === '__deactivate_edit_mode') {
-      hidePanel();
-    }
-  });
-  window.parent.postMessage({ type: '__edit_mode_available' }, '*');
-
-  // Initial render
   render();
-  // Auto-show panel on first load so users see they can tweak
-  setTimeout(() => { if (!tweaksActive) showPanel(); }, 600);
 </script>
 
 </body>
